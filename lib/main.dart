@@ -63,7 +63,7 @@ class MyView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => MyViewModel(),
+      create: (context) => MyViewModel(data:{}),
       child: Builder(
         builder: (context) {
           final viewModel = BlocProvider.of<MyViewModel>(context);
