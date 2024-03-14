@@ -37,14 +37,14 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class MyState {
-  Map<String, dynamic> data = {};
-  MyState({required this.data});
+class PageState {
+  Map<String, dynamic> stateData = {};
+  PageState({required this.stateData});
 }
 
-class MyViewModel extends Cubit<MyState> {
+class PageViewModel extends Cubit<PageState> {
 
-   Map<String, dynamic> data = {
+   Map<String, dynamic> pageData = {
   "id": 123,
   "name": "T-Shirt",
   "price": 19.99,
@@ -56,49 +56,49 @@ class MyViewModel extends Cubit<MyState> {
   }
 };
 
-  MyViewModel({required this.data}): super(MyState(data: {}));
+  PageViewModel(): super(PageState(stateData: {}));
 }
 
 class MyView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => MyViewModel(data:{}),
+      create: (context) => PageViewModel(),
       child: Builder(
         builder: (context) {
-          final viewModel = BlocProvider.of<MyViewModel>(context);
+          final viewModel = BlocProvider.of<PageViewModel>(context);
           return Scaffold(
             appBar: AppBar(
               title: Text('Dropdown ve Textbox Örneği'),
             ),
             body: Column(
               children: [
-                BlocBuilder<MyViewModel, MyState>(
+                BlocBuilder<PageViewModel, PageState>(
                   bloc: viewModel,
                   builder: (context, state) {
                     return DropdownButton(
-                      items: viewModel.data["categories"].map((value) {
+                      items: (viewModel.pageData["categories"] as List<String>).map((value) {
                         return DropdownMenuItem<dynamic>(
                           value: value,
                           child: Text(value.toString()),
                         );
                       }).toList(),
                       onChanged: (value) {
-                        viewModel.state.data["selectedValue"] = value;
-                        viewModel.emit(new MyState(data: viewModel.state.data));
+                        viewModel.state.stateData["selectedValue"] = value;
+                        viewModel.emit(new PageState(stateData: viewModel.state.stateData));
                         // viewModel.onDropdownChanged(value);
                       },
                     );
                   },
                 ),
-                BlocBuilder<MyViewModel, MyState>(
+                BlocBuilder<PageViewModel, PageState>(
                   bloc: viewModel,
                   builder: (context, state) {
-                    if (state.data["selectedValue"] != null) {
+                    if (state.stateData["selectedValue"] != null) {
                       // Show the TextField
                       return TextField(
                         controller: TextEditingController(
-                            text: state.data["selectedValue"].toString()),
+                            text: state.stateData["selectedValue"].toString()),
                         decoration: InputDecoration(labelText: 'Seçilen Değer'),
                       );
                     } else {
