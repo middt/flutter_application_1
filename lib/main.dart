@@ -32,11 +32,10 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home:  MyView(),
+      home: MyView(),
     );
   }
 }
-
 
 class MyState {
   Map<String, dynamic> data = {};
@@ -44,16 +43,25 @@ class MyState {
 }
 
 class MyViewModel extends Cubit<MyState> {
-  MyViewModel() : super(MyState(data: {}));
-  List<String> model = ['Seçenek 1', 'Seçenek 2', 'Seçenek 3'];
+
+   Map<String, dynamic> data = {
+  "id": 123,
+  "name": "T-Shirt",
+  "price": 19.99,
+  "categories": ['Seçenek 1', 'Seçenek 2', 'Seçenek 3'],
+  "details": {
+    "color": "Red",
+    "size": "Medium",
+    "material": "Cotton"
+  }
+};
+
+  MyViewModel({required this.data}): super(MyState(data: {}));
 }
 
 class MyView extends StatelessWidget {
-
   @override
   Widget build(BuildContext context) {
-  
-
     return BlocProvider(
       create: (context) => MyViewModel(),
       child: Builder(
@@ -69,7 +77,7 @@ class MyView extends StatelessWidget {
                   bloc: viewModel,
                   builder: (context, state) {
                     return DropdownButton(
-                      items: viewModel.model.map((value) {
+                      items: viewModel.data["categories"].map((value) {
                         return DropdownMenuItem<dynamic>(
                           value: value,
                           child: Text(value.toString()),
@@ -83,21 +91,22 @@ class MyView extends StatelessWidget {
                     );
                   },
                 ),
-BlocBuilder<MyViewModel, MyState>(
-  bloc: viewModel,
-  builder: (context, state) {
-    if (state.data["selectedValue"] != null) {
-      // Show the TextField
-      return TextField(
-        controller: TextEditingController(text: state.data["selectedValue"].toString()),
-        decoration: InputDecoration(labelText: 'Seçilen Değer'),
-      );
-    } else {
-      // Hide the widget (e.g., return an empty Container)
-      return Container();
-    }
-  },
-),
+                BlocBuilder<MyViewModel, MyState>(
+                  bloc: viewModel,
+                  builder: (context, state) {
+                    if (state.data["selectedValue"] != null) {
+                      // Show the TextField
+                      return TextField(
+                        controller: TextEditingController(
+                            text: state.data["selectedValue"].toString()),
+                        decoration: InputDecoration(labelText: 'Seçilen Değer'),
+                      );
+                    } else {
+                      // Hide the widget (e.g., return an empty Container)
+                      return Container();
+                    }
+                  },
+                ),
               ],
             ),
           );
